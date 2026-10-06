@@ -1,316 +1,211 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warfarin Dosage & Interaction Calculator</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Sarabun', sans-serif; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คำนวณยาน้ำเด็ก</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f1f7f5;--card:#fff;--ink:#12302a;--mute:#5d7a73;--line:#d9e6e2;--pri:#0f766e;--pri2:#115e59;--soft:#e2f3ef;--warn-bg:#fff7e0;--warn-line:#f1d27a;--warn-ink:#6b4e00;--err:#b42318}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1b18;--card:#14262b;--ink:#e6f2ef;--mute:#93b0a9;--line:#244039;--pri:#2dd4bf;--pri2:#5eead4;--soft:#173a36;--warn-bg:#3a3010;--warn-line:#7a6420;--warn-ink:#f5dd8a;--err:#ff8a80}}
+:root[data-theme="dark"]{--bg:#0d1b18;--card:#14262b;--ink:#e6f2ef;--mute:#93b0a9;--line:#244039;--pri:#2dd4bf;--pri2:#5eead4;--soft:#173a36;--warn-bg:#3a3010;--warn-line:#7a6420;--warn-ink:#f5dd8a;--err:#ff8a80}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sarabun',system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:480px;margin:0 auto;padding:16px 16px 40px}
+header{display:flex;align-items:center;gap:12px;margin:8px 0 16px}
+.logo{width:44px;height:44px;border-radius:14px;background:var(--pri);color:#fff;display:grid;place-items:center;font-size:24px}
+h1{font-size:20px;margin:0}
+header p{margin:0;font-size:13px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.lbl{font-size:13px;font-weight:600;color:var(--mute);margin-bottom:8px;display:block}
+.wrow{display:flex;gap:8px;align-items:stretch}
+.step{width:52px;border:1px solid var(--line);background:var(--soft);color:var(--pri2);border-radius:12px;font-size:24px;font-weight:600;cursor:pointer}
+.winp{flex:1;position:relative}
+.winp input{width:100%;height:100%;min-height:52px;font:inherit;font-size:26px;font-weight:700;text-align:center;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:0 44px 0 8px}
+.winp span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mute);font-weight:600}
+input:focus,.step:focus-visible,.drug:focus-visible,.btn:focus-visible{outline:3px solid var(--pri);outline-offset:1px}
+.quick{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.quick button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer}
+.err{color:var(--err);font-size:13px;margin-top:8px;min-height:18px}
+.drugs{display:grid;gap:8px}
+.drug{display:flex;gap:12px;align-items:center;text-align:left;width:100%;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:12px;font:inherit;cursor:pointer}
+.drug[aria-pressed="true"]{border-color:var(--pri);background:var(--soft)}
+.dot{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;background:var(--soft);flex:none}
+.drug b{display:block;font-size:15px}
+.drug small{color:var(--mute);font-size:12.5px}
+.btn{width:100%;border:0;border-radius:14px;background:var(--pri);color:#fff;font:inherit;font-size:17px;font-weight:700;padding:15px;cursor:pointer}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#06201c}}
+.res{display:none}
+.res.show{display:block}
+.big{text-align:center;padding:8px 0 14px}
+.big .n{font-size:40px;font-weight:700;color:var(--pri);line-height:1.1}
+.big .s{font-size:13px;color:var(--mute)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:14.5px}
+.kv span:first-child{color:var(--mute)}
+.kv span:last-child{font-weight:600;text-align:right}
+.warn{background:var(--warn-bg);border:1px solid var(--warn-line);color:var(--warn-ink);border-radius:14px;padding:12px 14px;font-size:13px}
+.warn p{margin:4px 0 0}
+.add summary{cursor:pointer;font-weight:700;color:var(--pri2)}
+.add .g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.add label{font-size:12.5px;color:var(--mute);display:block}
+.add input{width:100%;font:inherit;font-size:15px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);margin-top:3px}
+.add .f{grid-column:1/-1}
+.del{margin-left:auto;border:0;background:none;color:var(--err);font-size:18px;cursor:pointer;padding:6px}
+.row{display:flex;align-items:center;gap:4px}
+.mini{background:none;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;margin-top:10px}
+</style>
 </head>
-<body class="bg-slate-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden border border-slate-100">
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-700 to-indigo-800 px-6 py-6 text-white text-center">
-            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Warfarin Clinical Calculator</h1>
-            <p class="text-blue-100 text-sm mt-1">เครื่องมือคำนวณขนาดยา Warfarin, การจัดเม็ดยา และตรวจสอบ Drug Interactions</p>
-        </div>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo" aria-hidden="true">💊</div>
+  <div><h1>คำนวณยาน้ำเด็ก</h1><p>ปริมาณยาเป็น มล. และช้อนชา ตามน้ำหนักตัว</p></div>
+</header>
 
-        <div class="p-6 sm:p-8 space-y-6">
-            <!-- ส่วนที่ 1: การคำนวณขนาดยา -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-200">
-                <div class="space-y-4">
-                    <h2 class="text-lg font-semibold text-slate-800 border-b pb-2">1. คำนวณขนาดยา (Dose Calculation)</h2>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">ขนาดยาเดิม (mg/week)</label>
-                        <input type="number" id="oldDose" step="0.5" placeholder="เช่น 17.5" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    </div>
+<section class="card">
+  <label class="lbl" for="w">น้ำหนักเด็ก</label>
+  <div class="wrow">
+    <button class="step" id="minus" aria-label="ลดน้ำหนัก 0.5 กก.">−</button>
+    <div class="winp"><input id="w" type="number" inputmode="decimal" step="0.1" placeholder="0.0"><span>กก.</span></div>
+    <button class="step" id="plus" aria-label="เพิ่มน้ำหนัก 0.5 กก.">+</button>
+  </div>
+  <div class="quick" id="quick"></div>
+  <div class="err" id="err" role="alert"></div>
+</section>
 
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">ต้องการปรับขนาดยา (%) เช่น ลด 15% หรือเพิ่ม 10%</label>
-                        <div class="flex space-x-2">
-                            <select id="adjustType" class="px-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                <option value="decrease">ลดลง (-)</option>
-                                <option value="increase">เพิ่มขึ้น (+)</option>
-                            </select>
-                            <input type="number" id="adjustPercent" step="1" placeholder="ระบุ %" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                        </div>
-                    </div>
+<section class="card">
+  <span class="lbl">เลือกยา</span>
+  <div class="drugs" id="drugs"></div>
+  <div class="warn" id="info" style="margin-top:12px"></div>
+</section>
 
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">ระยะเวลาที่สั่งใช้</label>
-                        <div class="flex space-x-2">
-                            <input type="number" id="durationValue" placeholder="ระบุตัวเลข" class="w-2/3 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <select id="durationUnit" class="w-1/3 px-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                <option value="วัน">วัน</option>
-                                <option value="สัปดาห์" selected>สัปดาห์</option>
-                                <option value="เดือน">เดือน</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+<details class="card add"><summary>＋ เพิ่มรายการยาเอง</summary>
+  <p style="font-size:12.5px;color:var(--mute);margin:8px 0 0">กรอกตามฉลากยา/บัญชียาของโรงพยาบาล และให้เภสัชกรตรวจสอบก่อนใช้งาน</p>
+  <div class="g">
+    <div class="f"><label>ชื่อยา (รวมรูปแบบ)<input id="cName" placeholder="เช่น Ferrous drop"></label></div>
+    <label>ตัวยา (mg)<input id="cMg" type="number" step="any" inputmode="decimal"></label>
+    <label>ต่อปริมาตร (มล.)<input id="cMl" type="number" step="any" inputmode="decimal" value="5"></label>
+    <label>ขนาดต่ำสุด (mg/kg/ครั้ง)<input id="cLo" type="number" step="any" inputmode="decimal"></label>
+    <label>ขนาดสูงสุด (mg/kg/ครั้ง)<input id="cHi" type="number" step="any" inputmode="decimal" placeholder="เว้นว่าง = เท่าต่ำสุด"></label>
+    <label>เพดานต่อครั้ง (mg) ถ้ามี<input id="cCap" type="number" step="any" inputmode="decimal"></label>
+    <label>ข้อบ่งใช้ (สั้น ๆ)<input id="cUse"></label>
+    <div class="f"><label>วิธีกิน/ความถี่<input id="cIns" placeholder="เช่น วันละ 1 ครั้ง หลังอาหาร"></label></div>
+  </div>
+  <div class="err" id="cErr" role="alert"></div>
+  <button class="mini" id="cSave">บันทึกรายการยา</button>
+</details>
 
-                <div class="space-y-4">
-                    <h2 class="text-lg font-semibold text-slate-800 border-b pb-2">2. เลือกความแรงเม็ดยาหลักที่ใช้จัด</h2>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center space-x-2 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" value="1" class="tablet-strength w-4 h-4 text-blue-600 rounded">
-                            <span class="text-sm font-medium">Warfarin 1 mg (สีชมพู)</span>
-                        </label>
-                        <label class="flex items-center space-x-2 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" value="2" class="tablet-strength w-4 h-4 text-blue-600 rounded">
-                            <span class="text-sm font-medium">Warfarin 2 mg (สีม่วง/ส้ม)</span>
-                        </label>
-                        <label class="flex items-center space-x-2 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" value="3" checked class="tablet-strength w-4 h-4 text-blue-600 rounded">
-                            <span class="text-sm font-medium">Warfarin 3 mg (สีฟ้า)</span>
-                        </label>
-                        <label class="flex items-center space-x-2 p-3 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100">
-                            <input type="checkbox" value="5" class="tablet-strength w-4 h-4 text-blue-600 rounded">
-                            <span class="text-sm font-medium">Warfarin 5 mg (สีชมพูเข้ม)</span>
-                        </label>
-                    </div>
+<button class="btn" id="go">คำนวณขนาดยา</button>
 
-                    <button onclick="calculateWarfarin()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg shadow-md transition duration-200">
-                        คำนวณขนาดยาและจำนวนเม็ด
-                    </button>
-                </div>
-            </div>
+<section class="card res" id="res" style="margin-top:14px" aria-live="polite">
+  <div class="big"><div class="n" id="rMl">-</div><div class="s" id="rDrug">-</div></div>
+  <div class="kv"><span>เทียบเท่า</span><span id="rSp">-</span></div>
+  <div class="kv"><span>วิธีกิน</span><span id="rIns">-</span></div>
+  <button class="mini" id="copy">คัดลอกผลลัพธ์</button>
+</section>
 
-            <!-- ผลลัพธ์ (Results) -->
-            <div id="resultCard" class="hidden bg-indigo-50 border border-indigo-100 p-6 rounded-xl space-y-4">
-                <h3 class="text-lg font-bold text-indigo-900 border-b border-indigo-200 pb-2">ผลการคำนวณ</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    <div class="bg-white p-3 rounded-lg shadow-sm border border-indigo-100">
-                        <span class="text-slate-500 block">ขนาดยาที่คำนวณได้ใหม่:</span>
-                        <span id="resCalculatedMg" class="text-lg font-bold text-indigo-700">-</span> mg/week
-                    </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm border border-indigo-100">
-                        <span class="text-slate-500 block">ขนาดยาที่ต้องการสั่ง:</span>
-                        <span id="resTargetMg" class="text-lg font-bold text-indigo-700">-</span> mg/week 
-                        <span id="resPercentCompare" class="text-xs text-slate-500 block mt-1">(-)</span>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm border border-indigo-100">
-                        <span class="text-slate-500 block">สูตรยาที่จัด (Dosing Schedule):</span>
-                        <div id="resSchedule" class="font-semibold text-slate-800 mt-1 space-y-1">-</div>
-                    </div>
-                    <div class="bg-white p-3 rounded-lg shadow-sm border border-indigo-100">
-                        <span class="text-slate-500 block">ระยะเวลา & จำนวนเม็ดรวมทั้งหมด:</span>
-                        <span id="resDurationText" class="font-semibold text-slate-800">-</span>
-                        <div id="resTotalTablets" class="text-indigo-600 font-bold mt-1">-</div>
-                    </div>
-                </div>
-            </div>
+<div class="warn">
+  <b>⚠️ ข้อควรระวัง</b>
+  <p>• ใช้ไซริงค์หรือถ้วยตวงยาที่มากับขวดเสมอ ห้ามใช้ช้อนกินข้าว</p>
+  <p>• เครื่องมือนี้เป็นตัวช่วยคำนวณเท่านั้น ควรให้แพทย์หรือเภสัชกรตรวจสอบขนาดยาก่อนจ่ายทุกครั้ง</p>
+  <p>• หากอาการไม่ดีขึ้นหรือมีอาการแพ้ ให้พบแพทย์ทันที</p>
+</div>
+</div>
 
-            <!-- ส่วนที่ 2: Drug Interactions Checker -->
-            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4">
-                <h2 class="text-lg font-semibold text-slate-800 border-b pb-2">3. ตรวจสอบปฏิกิริยาระหว่างยา (Warfarin Drug Interactions)</h2>
-                <p class="text-xs text-slate-500">เลือกยาหรือกลุ่มยาที่ผู้ป่วยได้รับร่วมด้วยเพื่อตรวจสอบผลกระทบต่อ INR และ Warfarin</p>
+<script>
+const DRUGS = {
+  paracetamol:{icon:"🌡️",name:"Paracetamol Syrup",conc:"120 mg / 5 ml",use:"ลดไข้ แก้ปวด",
+    info:"เกณฑ์: 10–15 mg/kg/ครั้ง ทุก 4–6 ชั่วโมง เมื่อมีไข้หรือปวด",
+    calc:w=>({lo:(w*10/120)*5,hi:(w*15/120)*5,ins:"ทุก 4–6 ชม. เฉพาะเวลามีไข้/ปวด (ไม่เกิน 5 ครั้ง/วัน)"})},
+  paracetamol_forte:{icon:"🌡️",name:"Paracetamol Forte",conc:"250 mg / 5 ml",use:"ลดไข้ แก้ปวด (ความเข้มข้นสูง)",
+    info:"เกณฑ์: 10–15 mg/kg/ครั้ง ทุก 4–6 ชั่วโมง",
+    calc:w=>({lo:(w*10/250)*5,hi:(w*15/250)*5,ins:"ทุก 4–6 ชม. เฉพาะเวลามีไข้/ปวด (ไม่เกิน 5 ครั้ง/วัน)"})},
+  ibuprofen:{icon:"🔥",name:"Ibuprofen Suspension",conc:"100 mg / 5 ml",use:"ลดไข้ ต้านอักเสบ (> 6 เดือน)",
+    info:"เกณฑ์: 5–10 mg/kg/ครั้ง ทุก 6–8 ชั่วโมง ห้ามใช้ในเด็กอายุต่ำกว่า 6 เดือน",
+    calc:w=>({lo:(w*5/100)*5,hi:(w*10/100)*5,ins:"ทุก 6–8 ชม. หลังอาหารทันที (ระวังในเด็กโรคไตหรือไข้เลือดออก)"})},
+  amoxicillin:{icon:"🦠",name:"Amoxicillin Syrup",conc:"125 mg / 5 ml",use:"ยาปฏิชีวนะ",
+    info:"เกณฑ์: 30 mg/kg/วัน (ค่ากลางช่วง 25–40) แบ่งให้ทุก 8 ชั่วโมง",
+    calc:w=>{const m=(w*30/3/125)*5;return{lo:m,hi:m,ins:"วันละ 3 ครั้ง ทุก 8 ชม. กินให้ครบตามแพทย์สั่งแม้อาการหายแล้ว"}}},
+  amoxicillin_forte:{icon:"🦠",name:"Amoxicillin Forte",conc:"250 mg / 5 ml",use:"ยาปฏิชีวนะ (ความเข้มข้นสูง)",
+    info:"เกณฑ์: 30 mg/kg/วัน (ค่ากลางช่วง 25–40) แบ่งให้ทุก 8 ชั่วโมง",
+    calc:w=>{const m=(w*30/3/250)*5;return{lo:m,hi:m,ins:"วันละ 3 ครั้ง ทุก 8 ชม. กินให้ครบตามแพทย์สั่งแม้อาการหายแล้ว"}}},
+  cetirizine:{icon:"🤧",name:"Cetirizine Syrup",conc:"5 mg / 5 ml",use:"แก้แพ้ ลดน้ำมูก",
+    info:"เกณฑ์: น้ำหนัก > 15 กก. ให้ 5 มล., น้ำหนักน้อยกว่าให้ 2.5 มล. วันละครั้ง",
+    calc:w=>{const m=w>15?5:2.5;return{lo:m,hi:m,ins:"วันละ 1 ครั้ง ก่อนนอน หรือตามแพทย์สั่ง"}}},
+  chlorpheniramine:{icon:"🌿",name:"CPM (Chlorpheniramine)",conc:"2 mg / 5 ml",use:"แก้แพ้ ลดน้ำมูก ง่วงซึม",
+    info:"เกณฑ์: 0.35 mg/kg/วัน แบ่งให้ทุก 6 ชั่วโมง",
+    calc:w=>{const m=(w*0.35/4/2)*5;return{lo:m,hi:m,ins:"วันละ 4 ครั้ง ทุก 6 ชั่วโมง (อาจทำให้ง่วงนอน)"}}},
+  salbutamol:{icon:"🫁",name:"Salbutamol Syrup",conc:"2 mg / 5 ml",use:"ขยายหลอดลม",
+    info:"เกณฑ์: 0.1 mg/kg/ครั้ง ทุก 6–8 ชั่วโมง",
+    calc:w=>{const m=(w*0.1/2)*5;return{lo:m,hi:m,ins:"ทุก 6–8 ชม. เมื่อมีอาการไอ หอบ หรือเหนื่อย"}}},
+  domperidone:{icon:"🤢",name:"Domperidone Suspension",conc:"5 mg / 5 ml",use:"แก้คลื่นไส้ อาเจียน",
+    info:"เกณฑ์: 0.2–0.4 mg/kg/ครั้ง ทุก 8 ชั่วโมง",
+    calc:w=>({lo:(w*0.2/5)*5,hi:(w*0.4/5)*5,ins:"วันละ 3 ครั้ง ก่อนอาหาร ทุก 8 ชั่วโมง"})},
+  cough_syrup:{icon:"🧪",name:"Aqueous Cough Syrup",conc:"แก้ไอ ขับเสมหะ",use:"บรรเทาอาการไอมีเสมหะ",
+    info:"เกณฑ์ตามช่วงอายุ (ควรปรึกษาเภสัชกรหรือแพทย์ก่อนใช้ในเด็กเล็ก)",
+    calc:w=>{let m=w>15?5:2.5;return{lo:m,hi:m,ins:"ทุก 4–6 ชั่วโมง เมื่อมีอาการไอ"}}}
+};
+let sel="paracetamol", last="";
+const KEY="pedDrugsCustom";
+let CUSTOM=[];
+try{CUSTOM=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(_){CUSTOM=[]}
+function saveCustom(){try{localStorage.setItem(KEY,JSON.stringify(CUSTOM))}catch(_){}}
+function all(){
+  const o={...DRUGS};
+  CUSTOM.forEach(c=>{o[c.id]={icon:"💧",name:c.name,conc:`${c.mg} mg / ${c.ml} ml`,use:c.use||"รายการที่เพิ่มเอง",custom:true,
+    info:`เกณฑ์ที่กรอก: ${c.lo}${c.hi>c.lo?"–"+c.hi:""} mg/kg/ครั้ง${c.cap?` (สูงสุด ${c.cap} mg/ครั้ง)`:""}`,
+    calc:w=>{let lo=w*c.lo,hi=w*c.hi;let capped=false;if(c.cap){if(lo>c.cap){lo=c.cap;capped=true}if(hi>c.cap){hi=c.cap;capped=true}}
+      return{lo:lo/c.mg*c.ml,hi:hi/c.mg*c.ml,ins:(c.ins||"ตามที่แพทย์สั่ง")+(capped?" (จำกัดที่เพดานต่อครั้ง)":"")}}}});
+  return o}
+const $=id=>document.getElementById(id);
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f1=n=>(Math.round(n*10)/10).toFixed(1);
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <label class="flex items-center space-x-2 p-2.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 text-sm">
-                        <input type="checkbox" value="Amiodarone" class="interaction-drug w-4 h-4 text-amber-600 rounded">
-                        <span>Amiodarone <span class="text-red-500 text-xs font-bold">(เพิ่มฤทธิ์ ↑ INR)</span></span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 text-sm">
-                        <input type="checkbox" value="NSAIDs" class="interaction-drug w-4 h-4 text-amber-600 rounded">
-                        <span>NSAIDs / Aspirin <span class="text-red-500 text-xs font-bold">(เพิ่มเสี่ยงเลือดออก)</span></span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 text-sm">
-                        <input type="checkbox" value="Antibiotics" class="interaction-drug w-4 h-4 text-amber-600 rounded">
-                        <span>Broad-spectrum Antibiotics <span class="text-red-500 text-xs font-bold">(↑ INR)</span></span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 text-sm">
-                        <input type="checkbox" value="Rifampicin" class="interaction-drug w-4 h-4 text-amber-600 rounded">
-                        <span>Rifampicin <span class="text-blue-600 text-xs font-bold">(ลดฤทธิ์ ↓ INR)</span></span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 text-sm">
-                        <input type="checkbox" value="Anticonvulsants" class="interaction-drug w-4 h-4 text-amber-600 rounded">
-                        <span>Phenytoin / Carbamazepine <span class="text-blue-600 text-xs font-bold">(↓ INR)</span></span>
-                    </label>
-                    <label class="flex items-center space-x-2 p-2.5 bg-white border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-100 text-sm">
-                        <input type="checkbox" value="Thyroid" class="interaction-drug w-4 h-4 text-amber-600 rounded">
-                        <span>Thyroid Hormones <span class="text-red-500 text-xs font-bold">(↑ การสลาย Warfarin)</span></span>
-                    </label>
-                </div>
+function renderDrugs(){
+  $("drugs").innerHTML=Object.entries(all()).map(([k,d])=>
+    `<div class="row"><button class="drug" data-k="${k}" aria-pressed="${k===sel}"><span class="dot">${d.icon}</span><span><b>${esc(d.name)} <small>${d.conc}</small></b><small>${esc(d.use)}</small></span></button>${d.custom?`<button class="del" data-d="${k}" aria-label="ลบ ${esc(d.name)}">🗑</button>`:""}</div>`).join("");
+  if(!all()[sel])sel="paracetamol";
+  $("info").textContent=all()[sel].info;
+  document.querySelectorAll(".drug").forEach(b=>b.onclick=()=>{sel=b.dataset.k;renderDrugs();$("res").classList.remove("show")});
+  document.querySelectorAll(".del").forEach(b=>b.onclick=()=>{if(confirm("ลบรายการยานี้?")){CUSTOM=CUSTOM.filter(c=>c.id!==b.dataset.d);saveCustom();renderDrugs()}});
+}
+$("quick").innerHTML=[5,8,10,15,20,30].map(v=>`<button data-v="${v}">${v} กก.</button>`).join("");
+$("quick").onclick=e=>{if(e.target.dataset.v){$("w").value=e.target.dataset.v;$("err").textContent=""}};
+function bump(d){const v=parseFloat($("w").value)\vert{}\vert{}0;$("w").value=Math.max(0,Math.round((v+d)*10)/10)}
+$("minus").onclick=()=>bump(-0.5);$("plus").onclick=()=>bump(0.5);
 
-                <button onclick="checkInteractions()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 rounded-lg text-sm transition duration-200">
-                    ตรวจสอบ Drug Interactions
-                </button>
-
-                <div id="interactionResult" class="hidden p-4 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-900 space-y-2">
-                    <h4 class="font-bold flex items-center">⚠️ คำเตือน Drug Interactions:</h4>
-                    <ul id="interactionList" class="list-disc list-inside space-y-1"></ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript สำหรับคำนวณ -->
-    <script>
-        function calculateWarfarin() {
-            const oldDose = parseFloat(document.getElementById('oldDose').value);
-            const adjustType = document.getElementById('adjustType').value;
-            const adjustPercent = parseFloat(document.getElementById('adjustPercent').value) || 0;
-            const durationVal = parseFloat(document.getElementById('durationValue').value) || 1;
-            const durationUnit = document.getElementById('durationUnit').value;
-
-            if (isNaN(oldDose) || oldDose <= 0) {
-                alert('กรุณากรอกขนาดยาเดิมให้ถูกต้อง');
-                return;
-            }
-
-            // คำนวณขนาดยาใหม่ตามเปอร์เซ็นต์
-            let calculatedMg = oldDose;
-            if (adjustPercent > 0) {
-                if (adjustType === 'decrease') {
-                    calculatedMg = oldDose * (1 - (adjustPercent / 100));
-                } else {
-                    calculatedMg = oldDose * (1 + (adjustPercent / 100));
-                }
-            }
-
-            // เปอร์เซ็นต์เทียบกับยาเดิม
-            let exactPercent = (calculatedMg / oldDose) * 100;
-
-            // ดึงความแรงเม็ดยาที่เลือก
-            const selectedStrengths = Array.from(document.querySelectorAll('.tablet-strength:checked'))
-                .map(cb => parseInt(cb.value))
-                .sort((a, b) => b - a); // เรียงจากมากไปน้อย
-
-            if (selectedStrengths.length === 0) {
-                alert('กรุณาเลือกความแรงเม็ดยาอย่างน้อย 1 ชนิด');
-                return;
-            }
-
-            // แจกแจงขนาดยาต่อสัปดาห์ให้ลงตัวกับเม็ดยา (7 วัน)
-            // แปลงเป้าหมายเป็นโดสต่อวันเฉลี่ย
-            let targetDaily = calculatedMg / 7;
-            
-            // สร้างตารางจ่ายยา 7 วัน (จันทร์-อาทิตย์)
-            let weeklySchedule = distributeTablets(calculatedMg, selectedStrengths);
-            let totalTabletsPerWeek = weeklySchedule.totalTablets;
-
-            // คำนวณจำนวนเม็ดตามระยะเวลา
-            let totalWeeks = durationVal;
-            if (durationUnit === 'วัน') totalWeeks = durationVal / 7;
-            if (durationUnit === 'เดือน') totalWeeks = durationVal * 4.33;
-
-            let totalTabsOverall = Math.round(totalTabletsPerWeek * totalWeeks * 10) / 10;
-
-            // แสดงผลลัพธ์
-            document.getElementById('resultCard').classList.remove('hidden');
-            document.getElementById('resCalculatedMg').innerText = calculatedMg.toFixed(2);
-            document.getElementById('resTargetMg').innerText = weeklySchedule.actualWeeklyMg.toFixed(2);
-            document.getElementById('resPercentCompare').innerText = `(คิดเป็น ${exactPercent.toFixed(1)}% ของขนาดยาเดิม)`;
-            
-            let scheduleHTML = '';
-            const days = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
-            weeklySchedule.days.forEach((d, idx) => {
-                let detailStr = Object.entries(d.tablets).map(([str, count]) => `${count} เม็ด (${str}mg)`).join(' + ');
-                if (detailStr === '') detailStr = 'งดยา (0 mg)';
-                scheduleHTML += `<div><span class="font-medium text-slate-700">วัน${days[idx]}:</span> ${detailStr} <span class="text-xs text-slate-400">(= ${d.mg} mg)</span></div>`;
-            });
-            document.getElementById('resSchedule').innerHTML = scheduleHTML;
-
-            document.getElementById('resDurationText').innerText = `ระยะเวลาสั่งใช้: ${durationVal} ${durationUnit}`;
-            document.getElementById('resTotalTablets').innerHTML = `📦 รวมจำนวนเม็ดที่ต้องจ่ายทั้งสิ้นประมาณ: <span class="text-indigo-700 font-extrabold text-base">${totalTabsOverall} เม็ด</span> (เฉลี่ย ${totalTabletsPerWeek.toFixed(1)} เม็ด/สัปดาห์)`;
-        }
-
-        // ฟังก์ชันช่วยจัดสรรเม็ดยา 7 วันให้ใกล้เคียงเป้าหมายที่สุด
-        function distributeTablets(targetWeeklyMg, strengths) {
-            let targetDailyMg = targetWeeklyMg / 7;
-            let daysSchedule = [];
-            let totalTabletsSum = 0;
-            let actualWeeklyMgSum = 0;
-
-            for (let i = 0; i < 7; i++) {
-                // หาจำนวนเม็ดที่ใกล้เคียงโดสรายวันที่สุด
-                let bestCombo = {};
-                let bestDiff = 999;
-                let bestMg = 0;
-                let bestTotalTabs = 0;
-
-                // ลองวนหาผสมเม็ดยา (อย่างง่ายสำหรับ 1 วัน)
-                // เพื่อความแม่นยำ ลองเทียบทุกความเป็นไปได้ของการกินต่อวัน (สมมติสูงสุด 4 เม็ดต่อวัน)
-                for (let t1 = 0; t1 <= 4; t1++) {
-                    for (let t2 = 0; t2 <= 4; t2++) {
-                        for (let t3 = 0; t3 <= 4; t3++) {
-                            for (let t4 = 0; t4 <= 4; t4++) {
-                                let counts = [t1, t2, t3, t4];
-                                let currentMg = 0;
-                                let currentTabsCount = 0;
-                                let valid = true;
-
-                                strengths.forEach((str, sIdx) => {
-                                    currentMg += counts[sIdx] * str;
-                                    currentTabsCount += counts[sIdx];
-                                });
-
-                                if (currentTabsCount > 5) valid = too many tablets per day; // ป้องกันกินเกินจริง
-
-                                let diff = Math.abs(currentMg - targetDailyMg);
-                                if (diff < bestDiff) {
-                                    bestDiff = diff;
-                                    bestMg = currentMg;
-                                    bestCombo = {};
-                                    strengths.forEach((str, sIdx) => {
-                                        if (counts[sIdx] > 0) bestCombo[str] = counts[sIdx];
-                                    });
-                                    bestTotalTabs = currentTabsCount;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                daysSchedule.push({ mg: bestMg, tablets: bestCombo });
-                actualWeeklyMgSum += bestMg;
-                Object.values(bestCombo).forEach(val => totalTabletsSum += val);
-            }
-
-            return {
-                days: daysSchedule,
-                actualWeeklyMg: actualWeeklyMgSum,
-                totalTablets: totalTabletsSum
-            };
-        }
-
-        // ฟังก์ชันตรวจสอบ Drug Interactions
-        function checkInteractions() {
-            const selectedDrugs = Array.from(document.querySelectorAll('.interaction-drug:checked')).map(cb => cb.value);
-            const intResultDiv = document.getElementById('interactionResult');
-            const intListUl = document.getElementById('interactionList');
-
-            intListUl.innerHTML = '';
-
-            if (selectedDrugs.length === 0) {
-                intResultDiv.classList.add('hidden');
-                alert('กรุณาเลือกยาที่ต้องการตรวจสอบอย่างน้อย 1 ชนิด');
-                return;
-            }
-
-            const interactionData = {
-                "Amiodarone": "ยับยั้งเอนไซม์ CYP2C9 และ CYP3A4 ทำให้ระดับ Warfarin ในเลือดสูงขึ้น ส่งผลให้ **INR เพิ่มสูงขึ้นมาก** และเสี่ยงเลือดออก (ควรพิจารณาลดขนาดยา Warfarin ลง 30-50% เมื่อเริ่มยา)",
-                "NSAIDs": "เพิ่มความเสี่ยงภาวะเลือดออกในทางเดินอาหาร (GI bleeding) และยับยั้งเกล็ดเลือด แม้บางตัวจะไม่เปลี่ยนค่า INR โดยตรง แต่ **เพิ่มความเสี่ยงเลือดออกสูงมาก** หลีกเลี่ยงการใช้ร่วมกัน",
-                "Antibiotics": "ยาปฏิชีวนะกลุ่มกว้าง (เช่น Ciprofloxacin, Levofloxacin, Azithromycin, Cotrimoxazole) ทำลายแบคทีเรียในลำไส้ที่สังเคราะห์ Vitamin K หรือยับยั้งเมตาบอลิซึม ทำให้ **INR สูงขึ้น**",
-                "Rifampicin": "เป็นตัวเหนี่ยวนำเอนไซม์ (Enzyme inducer) ที่ทรงพลัง ทำให้ร่างกายกำจัด Warfarin เร็วขึ้น ส่งผลให้ **INR ลดต่ำลง** (ฤทธิ์ยาต้านการแข็งตัวของเลือดลดลง เสี่ยงเกิดลิ่มเลือดอุดตัน)",
-                "Anticonvulsants": "ยากันชัก (เช่น Phenytoin, Carbamazepine, Phenobarbital) เหนี่ยวนำเอนไซม์ตับ ทำให้ระดับ Warfarin ในเลือดลดลง และ **INR ลดต่ำลง**",
-                "Thyroid": "ภาวะไทรอยด์เป็นพิษหรือการได้รับยาฮอร์โมนไทรอยด์เพิ่มการสลายตัวของ Clotting factors ทำให้ **INR สูงขึ้น** และตอบสนองต่อ Warfarin มากขึ้น"
-            };
-
-            selectedDrugs.forEach(drug => {
-                let li = document.createElement('li');
-                li.innerHTML = `<strong>${drug}:</strong> ${interactionData[drug]}`;
-                intListUl.appendChild(li);
-            });
-
-            intResultDiv.classList.remove('hidden');
-        }
-    </script>
+function go(){
+  const w=parseFloat($("w").value),e=$("err");
+  if(isNaN(w)||w<=0){e.textContent="กรุณากรอกน้ำหนักเด็กให้ถูกต้อง";return}
+  if(w<2||w>60){e.textContent="น้ำหนักอยู่นอกช่วงที่รองรับ (2–60 กก.) กรุณาตรวจสอบอีกครั้ง";$("res").classList.remove("show");return}
+  e.textContent=w>40?"น้ำหนักค่อนข้างมาก ควรเทียบกับขนาดยาสูงสุดของผู้ใหญ่ด้วย":"";
+  const d=all()[sel],r=d.calc(w),same=Math.abs(r.hi-r.lo)<0.05;
+  const ml=same?`${f1(r.lo)} มล.`:`${f1(r.lo)} – ${f1(r.hi)} มล.`;
+  const sp=same?`${f1(r.lo/5)} ช้อนชา`:`${f1(r.lo/5)} – ${f1(r.hi/5)} ช้อนชา`;
+  $("rMl").textContent=ml;$("rDrug").textContent=`${d.name} ${d.conc} • เด็กหนัก ${w} กก.`;
+  $("rSp").textContent=sp;$("rIns").textContent=r.ins;
+  last=`${d.name} ${d.conc} | น้ำหนัก ${w} กก. | ${ml} (${sp}) | ${r.ins}`;
+  $("res").classList.add("show");$("res").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+$("go").onclick=go;
+$("w").addEventListener("keydown",e=>{if(e.key==="Enter")go()});
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(last);$("copy").textContent="คัดลอกแล้ว ✓"}catch(_){$("copy").textContent="คัดลอกไม่สำเร็จ"}setTimeout(()=>$("copy").textContent="คัดลอกผลลัพธ์",1600)};
+$("cSave").onclick=()=>{
+  const g=i=>$(i).value.trim(),n=i=>parseFloat($(i).value);
+  const name=g("cName"),mg=n("cMg"),ml=n("cMl"),lo=n("cLo");let hi=n("cHi"),cap=n("cCap");
+  const e=$("cErr");
+  if(!name||!(mg>0)||!(ml>0)||!(lo>0)){e.textContent="กรุณากรอกชื่อยา ความเข้มข้น และขนาดต่ำสุดให้ครบ";return}
+  if(isNaN(hi))hi=lo;
+  if(hi<lo){e.textContent="ขนาดสูงสุดต้องไม่น้อยกว่าขนาดต่ำสุด";return}
+  const id="c"+Date.now();
+  CUSTOM.push({id,name,mg,ml,lo,hi,cap:cap>0?cap:0,use:g("cUse"),ins:g("cIns")});
+  saveCustom();sel=id;e.textContent="";
+  ["cName","cMg","cLo","cHi","cCap","cUse","cIns"].forEach(i=>$(i).value="");
+  renderDrugs();
+};
+renderDrugs();
+</script>
 </body>
 </html>
